@@ -28,6 +28,11 @@ char *read_file(const char *path)
     return buffer;
 }
 
+int isalphanum(char c)
+{
+	return ((48 <= c) && (c <= 57)) || ((65 <= c) && (c <= 90)) || ((97<= c) && (c <= 122));
+}
+
 Node *createNode(void *data, Node *next)
 {
 	Node *node = malloc(sizeof(Node));
@@ -91,3 +96,18 @@ void printLinkedList(LinkedList *ll, void (*printNodeData)(void *Node))
 		iter = iter->next;
 	}
 }
+
+int hash(char *data, int limit)
+{
+	char *str_copy = malloc(strlen(data));
+	strcpy(str_copy, data);
+	unsigned int long hash_value = 1024;
+	char c;
+	while(c = *str_copy++)
+	{
+		hash_value = ((hash_value << 5) + hash_value) + c;
+	}
+
+	return hash_value;
+}
+

@@ -1,1 +1,4 @@
-hello haha;
+func main() -> int {
+    printf(1);
+    return 0;
+}

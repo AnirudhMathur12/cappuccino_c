@@ -7,6 +7,7 @@
 #define MAX_ARR 10000
 
 char *read_file(const char *path);
+int isalphanum(char c);
 
 typedef struct Node Node;
 
@@ -27,5 +28,8 @@ typedef struct
 LinkedList *createLinkedList(void *data);
 void insertLinkedList(LinkedList *ll, void *data, int pos);
 void printLinkedList(LinkedList *ll, void (*printNodeData)(void *Node));
+
+int hash(char *data, int limit);
+
 
 #endif
