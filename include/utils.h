@@ -9,27 +9,9 @@
 char *read_file(const char *path);
 int isalphanum(char c);
 
-typedef struct Node Node;
+typedef struct {
 
-struct Node
-{
-	void *data;
-	Node *next;
-};
 
-Node *createNode(void *data, Node *next);
-
-typedef struct
-{
-	Node *head;
-	size_t size;
-} LinkedList;
-
-LinkedList *createLinkedList(void *data);
-void insertLinkedList(LinkedList *ll, void *data, int pos);
-void printLinkedList(LinkedList *ll, void (*printNodeData)(void *Node));
-
-int hash(char *data, int limit);
-
+} dynamic_array;
 
 #endif
