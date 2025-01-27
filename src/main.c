@@ -1,21 +1,23 @@
-#include "tokenizer.h"
-#include "utils.h"
+#include "tokenizer.c"
+#include "utils.c"
+#include <assert.h>
 #include <stdio.h>
 
-void printNodeData_Int(void *data)
-{
-	printf("%d\n", *(int *) data);
-}
-
-int main(int argc, char **argv)
-{
-    printf("lmfao %s\n", argv[1]);
-    printf("%d", isalphanum('('));
+int main(int argc, char **argv) {
     char *file_data = read_file(argv[1]);
 
-    if (file_data != NULL)
-    {
+    Token *tok_arr = tokenize(file_data);
+    int iter = 0;
+    while (tok_arr[iter].type != TOK_ARR_TERMINATE) {
+        printf("Token Name: %s, Token Type: %d\n", tok_arr[iter].token_name,
+               tok_arr[iter].type);
+        iter++;
+    }
+
+    if (file_data != NULL) {
         free(file_data);
     }
+
+    free(tok_arr);
     return 0;
 }
