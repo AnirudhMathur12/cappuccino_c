@@ -9,6 +9,8 @@ typedef enum {
     TOK_KEYWORD,
     TOK_DATATYPE,
     TOK_NUMBER,
+    TOK_LINE_TERMINATOR,
+    TOK_BRACKETS,
     TOK_SPECIAL_SYMBOLS,
     TOK_ARR_TERMINATE
 } TokenType;
@@ -46,9 +48,11 @@ Token *tokenize(char *data) {
             buffer[i - offset] = data[i];
         } else {
             buffer[i - offset] = '\0';
-            buffer_to_token(buffer, current);
-            current++;
-            offset = i;
+            if (strlen(buffer)) {
+                buffer_to_token(buffer, current);
+                current++;
+                offset = i;
+            }
             if (!ISWHITESPACE(data[i])) {
                 buffer[i - offset] = data[i];
                 buffer[i - offset + 1] = '\0';
@@ -60,7 +64,8 @@ Token *tokenize(char *data) {
 
         if (current == max - 1) {
             max = (int)(max * 2.5);
-            realloc(tok_arr, (int)max);
+            tok_arr = realloc(tok_arr, (int)max * sizeof(Token));
+            printf("Updated token array to size %d\n", max);
         }
     }
     tok_arr[current++] = (Token){.token_name = NULL, .type = TOK_ARR_TERMINATE};
@@ -93,6 +98,19 @@ void buffer_to_token(char *buffer, int iter) {
     }
     if (pure_number) {
         tok_arr[iter].type = TOK_NUMBER;
+        return;
+    }
+
+    if (strlen(buffer) == 1) {
+        if (ISBRACKET(buffer[0])) {
+            tok_arr[iter].type = TOK_BRACKETS;
+            return;
+        }
+
+        if (buffer[0] == ';') {
+            tok_arr[iter].type = TOK_LINE_TERMINATOR;
+            return;
+        }
     }
 
     tok_arr[iter].type = TOK_IDENTIFIER;

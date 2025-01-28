@@ -13,6 +13,7 @@ int main(int argc, char **argv) {
                tok_arr[iter].type);
         iter++;
     }
+    printf("%d\n", iter);
 
     if (file_data != NULL) {
         free(file_data);
