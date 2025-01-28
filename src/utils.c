@@ -11,8 +11,6 @@
     (chr == 40 || chr == 41 || chr == 123 || chr == 125 || chr == 91 ||        \
      chr == 93)
 
-typedef enum { true = 1, false = 0 } bool;
-
 char *read_file(const char *path) {
     FILE *fp = fopen(path, "r");
     if (fp == NULL) {
