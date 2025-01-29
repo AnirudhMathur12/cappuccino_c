@@ -22,7 +22,7 @@ typedef struct {
 } Token;
 
 typedef struct {
-    int32_t lenght;
+    int32_t length;
     int32_t capacity;
     Token *array;
 } TokenArray;
@@ -32,10 +32,17 @@ void TokenArray_free(TokenArray *tok_arr) {
     free(tok_arr);
 }
 
+TokenArray TokenArray_init(int capacity) {
+    TokenArray arr = {.length = 0,
+                      .capacity = capacity,
+                      .array = calloc(arr.capacity, sizeof(Token))};
+    return arr;
+}
+
 typedef struct {
-    Token **statements;
+    TokenArray *statements;
     int size;
-    int *statement_size;
+    int capacity;
 } Scope;
 
 #endif
