@@ -48,9 +48,8 @@ TokenArray tokenize(char *data) {
 
         if (current == tok_arr.capacity - 1) {
             tok_arr.capacity = (int)(tok_arr.capacity * 2.5);
-            tok_arr.array =
-                realloc(tok_arr.array, (int)tok_arr.capacity * sizeof(Token));
-            printf("Updated token array to size %d\n", tok_arr.capacity);
+            tok_arr.array = realloc(tok_arr.array, (int)tok_arr.capacity * sizeof(Token));
+            // printf("Updated token array to size %d\n", tok_arr.capacity);
         }
     }
     free(buffer);
