@@ -25,15 +25,12 @@ typedef struct {
     uint32_t length;
     uint32_t capacity;
     Token *array;
+    char *file_name;
 } TokenArray;
 
-void TokenArray_free(TokenArray *tok_arr) {
-    free(tok_arr->array);
-    free(tok_arr);
-}
-
 TokenArray TokenArray_init(int capacity) {
-    TokenArray arr = {.length = 0, .capacity = capacity, .array = calloc(arr.capacity, sizeof(Token))};
+    TokenArray arr = {
+        .length = 0, .capacity = capacity, .array = calloc(arr.capacity, sizeof(Token))};
     return arr;
 }
 
@@ -41,6 +38,7 @@ typedef struct {
     TokenArray *statements;
     uint32_t size;
     uint32_t capacity;
+    char *file_name;
 } Statements;
 
 typedef struct {
@@ -61,6 +59,19 @@ typedef struct {
     ASTNode *array;
     uint32_t length;
     uint32_t capacity;
+    uint32_t identifier_count;
+    char *file_name;
 } AST;
+
+typedef struct {
+    Token identifier;
+    uint32_t size_byte;
+} Identifier;
+
+typedef struct {
+    Identifier *array;
+    uint32_t length;
+    uint32_t capacity;
+} IdentifierArray;
 
 #endif

@@ -18,7 +18,7 @@ TokenArray tok_arr;
 int current;
 // int max;
 
-TokenArray tokenize(char *data) {
+TokenArray tokenize(char *data, char *file_name) {
 
     tok_arr = TokenArray_init(128);
     current = 0;

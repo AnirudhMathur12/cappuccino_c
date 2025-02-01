@@ -8,7 +8,7 @@
 int main(int argc, char **argv) {
     char *file_data = read_file(argv[1]);
 
-    TokenArray tok_arr = tokenize(file_data);
+    TokenArray tok_arr = tokenize(file_data, argv[1]);
     // for (int i = 0; i < tok_arr.length; i++) {
     //     printf("Token Name: %s, Token Type: %d\n", tok_arr.array[i].token_name,
     //     tok_arr.array[i].type);
@@ -16,7 +16,7 @@ int main(int argc, char **argv) {
     // printf("%d\n", tok_arr.length);
     // printf("%d\n", tok_arr.capacity);
 
-    Statements global_scope = analyze_statements(tok_arr);
+    Statements statements = analyze_statements(tok_arr);
     // for (int i = 0; i < global_scope.size; i++) {
     //     TokenArray arr = global_scope.statements[i];
     //     printf("Statement %d:\n", i + 1);
@@ -27,7 +27,12 @@ int main(int argc, char **argv) {
     //     printf("\n");
     // }
 
-    AST ast = generate_AST(global_scope);
+    // AST ast = generate_AST(global_scope);
+    for (int i = 0; i < 16; i++) {
+
+        uint32_t stack_space = ((int)(i / 4) + 1) * 16;
+        printf("%d: %d\n", i, stack_space);
+    }
     // for (int i = 0; i < ast.length; i++) {
     //     switch (ast.array[i].type) {
     //     case VAR_DECL:
