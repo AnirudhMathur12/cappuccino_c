@@ -7,12 +7,6 @@
 
 void buffer_to_token(char *buffer, int iter);
 
-const int KEYWORD_SIZE = 3;
-const int DATATYPES_SIZE = 3;
-
-char *keywords[KEYWORD_SIZE] = {"if", "else", "while"};
-char *datatypes[DATATYPES_SIZE] = {"int", "float", "string"};
-
 // Token *tok_arr;
 TokenArray tok_arr;
 int current;

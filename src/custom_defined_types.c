@@ -5,6 +5,12 @@
 
 typedef enum { true = 1, false = 0 } bool;
 
+#define KEYWORD_SIZE 3
+#define DATATYPES_SIZE 3
+
+char *keywords[KEYWORD_SIZE] = {"if", "else", "while"};
+char *datatypes[DATATYPES_SIZE] = {"int", "float", "string"};
+
 typedef enum {
     TOK_IDENTIFIER,
     TOK_KEYWORD,
@@ -29,49 +35,8 @@ typedef struct {
 } TokenArray;
 
 TokenArray TokenArray_init(int capacity) {
-    TokenArray arr = {
-        .length = 0, .capacity = capacity, .array = calloc(arr.capacity, sizeof(Token))};
-    return arr;
+    return (TokenArray){
+        .length = 0, .capacity = capacity, .array = calloc(capacity, sizeof(Token))};
 }
-
-typedef struct {
-    TokenArray *statements;
-    uint32_t size;
-    uint32_t capacity;
-    char *file_name;
-} Statements;
-
-typedef struct {
-    enum { VAR_DECL, VAR_ASSIGMENT } type;
-    union {
-        struct {
-            Token data_type;
-            Token identifier;
-        } VAR_DECL;
-        struct {
-            Token identifier;
-            Token value;
-        } VAR_ASSIGMENT;
-    } data;
-} ASTNode;
-
-typedef struct {
-    ASTNode *array;
-    uint32_t length;
-    uint32_t capacity;
-    uint32_t identifier_count;
-    char *file_name;
-} AST;
-
-typedef struct {
-    Token identifier;
-    uint32_t size_byte;
-} Identifier;
-
-typedef struct {
-    Identifier *array;
-    uint32_t length;
-    uint32_t capacity;
-} IdentifierArray;
 
 #endif
