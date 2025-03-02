@@ -1,13 +1,5 @@
-#ifndef TOKENIZER
-#define TOKENIZER
-#include "custom_defined_types.c"
-#include "utils.c"
-#include <stdlib.h>
-#include <string.h>
+#include "tokenizer.h"
 
-void buffer_to_token(char *buffer, int iter);
-
-// Token *tok_arr;
 TokenArray tok_arr;
 int current;
 // int max;
@@ -27,14 +19,14 @@ TokenArray tokenize(char *data, char *file_name) {
         } else {
             buffer[i - offset] = '\0';
             if (strlen(buffer)) {
-                buffer_to_token(buffer, current);
+                buffer_to_token(buffer);
                 current++;
                 offset = i;
             }
             if (!ISWHITESPACE(data[i])) {
                 buffer[i - offset] = data[i];
                 buffer[i - offset + 1] = '\0';
-                buffer_to_token(buffer, current);
+                buffer_to_token(buffer);
                 current++;
             }
             offset = i + 1;
@@ -50,21 +42,21 @@ TokenArray tokenize(char *data, char *file_name) {
     return tok_arr;
 }
 
-void buffer_to_token(char *buffer, int iter) {
+void buffer_to_token(char *buffer) {
     // printf("%s\t", buffer);
+    tok_arr.array[tok_arr.length].token_name = malloc(strlen(buffer) + 1);
+    strcpy(tok_arr.array[tok_arr.length].token_name, buffer);
     tok_arr.length++;
-    tok_arr.array[iter].token_name = malloc(strlen(buffer) + 1);
-    strcpy(tok_arr.array[iter].token_name, buffer);
 
     for (int i = 0; i < KEYWORD_SIZE; i++) {
         if (!strcmp(buffer, keywords[i])) {
-            tok_arr.array[iter].type = TOK_KEYWORD;
+            tok_arr.array[tok_arr.length].type = TOK_KEYWORD;
             return;
         }
     }
     for (int i = 0; i < DATATYPES_SIZE; i++) {
         if (!strcmp(buffer, datatypes[i])) {
-            tok_arr.array[iter].type = TOK_DATATYPE;
+            tok_arr.array[tok_arr.length].type = TOK_DATATYPE;
             return;
         }
     }
@@ -72,27 +64,27 @@ void buffer_to_token(char *buffer, int iter) {
     for (int i = 0; i < strlen(buffer); i++) {
         if (!ISNUM(buffer[i])) {
             pure_number = false;
+            break;
         }
     }
     if (pure_number) {
-        tok_arr.array[iter].type = TOK_NUMBER;
+        tok_arr.array[tok_arr.length].type = TOK_NUMBER;
         return;
     }
 
     if (strlen(buffer) == 1) {
         if (ISBRACKET(buffer[0])) {
-            tok_arr.array[iter].type = TOK_BRACKETS;
+            tok_arr.array[tok_arr.length].type = TOK_BRACKETS;
             return;
         }
 
         if (buffer[0] == ';') {
-            tok_arr.array[iter].type = TOK_LINE_TERMINATOR;
+            tok_arr.array[tok_arr.length].type = TOK_LINE_TERMINATOR;
             return;
         }
     }
 
-    tok_arr.array[iter].type = TOK_IDENTIFIER;
-    // printf("%d\n", tok_arr.array[iter].type);
+    tok_arr.array[tok_arr.length].type = TOK_IDENTIFIER;
+    // printf("%d\n", tok_arr.array[tok_arr.length].type);
     return;
 }
-#endif
