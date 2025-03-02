@@ -11,7 +11,6 @@
 #define ISBRACKET(chr)                                                                             \
     (chr == 40 || chr == 41 || chr == 123 || chr == 125 || chr == 91 || chr == 93)
 
-int strcpy_but_better(char *dst, char *src);
 char *read_file(const char *path);
 
 #endif

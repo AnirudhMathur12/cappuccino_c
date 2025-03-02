@@ -22,12 +22,3 @@ char *read_file(const char *path) {
     fclose(fp);
     return buffer;
 }
-
-int strcpy_but_better(char *dst, char *src) {
-    dst = calloc(strlen(src) + 1, 1);
-    if (!dst)
-        return -1;
-
-    strcpy(dst, src);
-    return 0;
-}
