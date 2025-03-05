@@ -17,8 +17,11 @@ typedef enum {
     TOK_DATATYPE,
     TOK_NUMBER,
     TOK_LINE_TERMINATOR,
-    TOK_BRACKETS,
+    TOK_CURLY_BRACKETS_START,
+    TOK_CURLY_BRACKETS_END,
     TOK_SPECIAL_SYMBOLS,
+    TOK_PARENTHESES_START,
+    TOK_PARENTHESES_END
 } TokenType;
 
 typedef struct {
@@ -50,6 +53,14 @@ typedef struct {
 } TokenArray;
 
 TokenArray TokenArray_init(int capacity);
+
+typedef struct {
+    uint32_t length;
+    uint32_t capacity;
+    TokenArray *array;
+} Statements;
+
+Statements Statements_init(int capacity);
 
 typedef struct {
     uint32_t length;

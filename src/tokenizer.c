@@ -1,4 +1,6 @@
 #include "tokenizer.h"
+#include "data_types.h"
+#include "utils.h"
 
 TokenArray tok_arr;
 int current;
@@ -20,6 +22,7 @@ TokenArray tokenize(char *data, char *file_name) {
             buffer[i - offset] = '\0';
             if (strlen(buffer)) {
                 buffer_to_token(buffer);
+                tok_arr.length++;
                 current++;
                 offset = i;
             }
@@ -27,6 +30,7 @@ TokenArray tokenize(char *data, char *file_name) {
                 buffer[i - offset] = data[i];
                 buffer[i - offset + 1] = '\0';
                 buffer_to_token(buffer);
+                tok_arr.length++;
                 current++;
             }
             offset = i + 1;
@@ -43,12 +47,12 @@ TokenArray tokenize(char *data, char *file_name) {
 }
 
 void buffer_to_token(char *buffer) {
-    // printf("%s\t", buffer);
+    // printf("%s.\n", buffer);
     tok_arr.array[tok_arr.length].token_name = malloc(strlen(buffer) + 1);
     strcpy(tok_arr.array[tok_arr.length].token_name, buffer);
-    tok_arr.length++;
 
     for (int i = 0; i < KEYWORD_SIZE; i++) {
+        // printf("Comparing %s with %s\n", buffer, keywords[i]);
         if (!strcmp(buffer, keywords[i])) {
             tok_arr.array[tok_arr.length].type = TOK_KEYWORD;
             return;
@@ -72,16 +76,34 @@ void buffer_to_token(char *buffer) {
         return;
     }
 
-    if (strlen(buffer) == 1) {
-        if (ISBRACKET(buffer[0])) {
-            tok_arr.array[tok_arr.length].type = TOK_BRACKETS;
-            return;
-        }
+    if (buffer[0] == '{') {
+        tok_arr.array[tok_arr.length].type = TOK_CURLY_BRACKETS_START;
+        return;
+    }
 
-        if (buffer[0] == ';') {
-            tok_arr.array[tok_arr.length].type = TOK_LINE_TERMINATOR;
-            return;
-        }
+    if (buffer[0] == '}') {
+        tok_arr.array[tok_arr.length].type = TOK_CURLY_BRACKETS_END;
+        return;
+    }
+
+    if (buffer[0] == '(') {
+        tok_arr.array[tok_arr.length].type = TOK_PARENTHESES_START;
+        return;
+    }
+
+    if (buffer[0] == ')') {
+        tok_arr.array[tok_arr.length].type = TOK_PARENTHESES_END;
+        return;
+    }
+
+    if (buffer[0] == ';') {
+        tok_arr.array[tok_arr.length].type = TOK_LINE_TERMINATOR;
+        return;
+    }
+
+    if (strlen(buffer) == 1 && !ISALPHA(buffer[0])) {
+        tok_arr.array[tok_arr.length].type = TOK_SPECIAL_SYMBOLS;
+        return;
     }
 
     tok_arr.array[tok_arr.length].type = TOK_IDENTIFIER;

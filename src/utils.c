@@ -1,4 +1,5 @@
 #include "utils.h"
+#include "data_types.h"
 
 char *read_file(const char *path) {
     FILE *fp = fopen(path, "r");
