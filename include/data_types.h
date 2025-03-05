@@ -3,7 +3,8 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-typedef enum { true = 1, false = 0 } bool;
+typedef enum { true = 1,
+    false = 0 } bool;
 
 #define KEYWORD_SIZE 3
 #define DATATYPES_SIZE 3
@@ -30,21 +31,39 @@ typedef struct {
 } Token;
 
 typedef struct {
-    enum { VAR_DECLARATION, VAR_DEFINITION } type;
+    enum {
+        VAR_ASSIGNMENT
+    } type;
 
     union {
         struct {
-            char *identifier_name;
-            char *identifier_type;
-        } VAR_DECLARATION;
+            int index;
+            int data;
+        } VAR_ASSIGNMENT;
 
-        struct {
-            char *identifier_name;
-            char *data;
-        } VAR_DEFINITION;
     } data;
 
 } ASTNode;
+
+typedef enum {
+    INT = 32,
+    FLOAT = 32,
+    CHAR = 8,
+} Datatype;
+
+typedef struct {
+    Datatype type;
+    char *variable_name;
+    int stack_offset;
+} Variable;
+
+typedef struct {
+    uint32_t length;
+    uint32_t capacity;
+    Variable *array;
+} VariableArray;
+
+VariableArray VariableArray_init(int capacity);
 
 typedef struct {
     uint32_t length;
@@ -69,5 +88,12 @@ typedef struct {
 } ASTNodeArray;
 
 ASTNodeArray ASTNodeArray_init(int capacity);
+
+typedef struct {
+    ASTNodeArray astNodeArr;
+    VariableArray varArr;
+} AbstractSyntaxTree;
+
+AbstractSyntaxTree AST_init(int ast_capacity, int var_capacity);
 
 #endif

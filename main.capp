@@ -1,2 +1,4 @@
 int help;
+float delp;
 help = 7;
+delp = 9;

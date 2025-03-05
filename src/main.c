@@ -1,5 +1,6 @@
 #include "ast.h"
 #include "data_types.h"
+#include "gen_assembly.h"
 #include "tokenizer.h"
 #include "utils.h"
 #include <assert.h>
@@ -21,13 +22,29 @@ int main(int argc, char **argv) {
     // printf("%d\n", tok_arr.capacity);
 
     Statements statements = GenerateStatements(tok_arr);
-    for (int i = 0; i < statements.length; i++) {
-        TokenArray arr = statements.array[i];
-        printf("Statement %d\n", i + 1);
-        for (int j = 0; j < arr.length; j++) {
-            printf("Token Name: %s\tToken Type: %d\n", arr.array[j].token_name, arr.array[j].type);
-        }
+    // for (int i = 0; i < statements.length; i++) {
+    //     TokenArray arr = statements.array[i];
+    //     printf("Statement %d\n", i + 1);
+    //     for (int j = 0; j < arr.length; j++) {
+    //         printf("Token Name: %s\tToken Type: %d\n", arr.array[j].token_name, arr.array[j].type);
+    //     }
+    // }
+
+    AbstractSyntaxTree ast = GenerateAbstractSyntaxTree(statements);
+    for (int i = 0; i < ast.varArr.length; i++) {
+        printf("Type: %d, Name: %s, Offset: %d\n",
+            ast.varArr.array[i].type,
+            ast.varArr.array[i].variable_name,
+            ast.varArr.array[i].stack_offset);
     }
+
+    for (int i = 0; i < ast.astNodeArr.length; i++) {
+        printf("Index: %d, Data: %d\n",
+            ast.astNodeArr.array[i].data.VAR_ASSIGNMENT.index,
+            ast.astNodeArr.array[i].data.VAR_ASSIGNMENT.data);
+    }
+
+    generate_assembly(ast);
 
     if (file_data != NULL) {
         free(file_data);

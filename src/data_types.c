@@ -16,10 +16,25 @@ Statements Statements_init(int capacity) {
     };
 }
 
+VariableArray VariableArray_init(int capacity) {
+    return (VariableArray){
+        .length = 0,
+        .capacity = capacity,
+        .array = calloc(capacity, sizeof(Variable)),
+    };
+}
+
 ASTNodeArray ASTNodeArray_init(int capacity) {
     return (ASTNodeArray){
         .length = 0,
         .capacity = capacity,
         .array = calloc(capacity, sizeof(ASTNode)),
+    };
+}
+
+AbstractSyntaxTree AST_init(int ast_capacity, int var_capacity) {
+    return (AbstractSyntaxTree){
+        .astNodeArr = ASTNodeArray_init(ast_capacity),
+        .varArr = VariableArray_init(var_capacity),
     };
 }
