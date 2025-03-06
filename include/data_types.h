@@ -30,7 +30,9 @@ typedef struct {
     char *token_name;
 } Token;
 
-typedef struct {
+typedef struct ASTNode ASTNode;
+
+struct ASTNode {
     enum {
         VAR_ASSIGNMENT
     } type;
@@ -40,10 +42,15 @@ typedef struct {
             int index;
             int data;
         } VAR_ASSIGNMENT;
-
     } data;
+};
 
-} ASTNode;
+#define AST_NEW(type, ...)          \
+    (ASTNode) {                     \
+        type, {                     \
+            .type = { __VA_ARGS__ } \
+        }                           \
+    }
 
 typedef enum {
     INT = 32,
@@ -54,13 +61,14 @@ typedef enum {
 typedef struct {
     Datatype type;
     char *variable_name;
-    int stack_offset;
+    uint32_t stack_offset;
 } Variable;
 
 typedef struct {
     uint32_t length;
     uint32_t capacity;
     Variable *array;
+    uint32_t total_stack_space;
 } VariableArray;
 
 VariableArray VariableArray_init(int capacity);

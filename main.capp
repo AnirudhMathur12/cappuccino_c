@@ -1,4 +1,5 @@
 int help;
-float delp;
+int kulk;
 help = 7;
-delp = 9;
+kulk = 8;
+help = 6;

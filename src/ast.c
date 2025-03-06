@@ -1,5 +1,7 @@
 #include "ast.h"
 #include "data_types.h"
+#include "utils.h"
+#include <stdio.h>
 #include <string.h>
 
 Statements GenerateStatements(TokenArray tok_arr) {
@@ -34,25 +36,26 @@ AbstractSyntaxTree GenerateAbstractSyntaxTree(Statements statements) {
 
     for (int i = 0; i < statements.length; i++) {
         TokenArray *arr = &statements.array[i];
-        if (arr->length == 2 &&
-            arr->array[0].type == TOK_DATATYPE &&
+        if (arr->array[0].type == TOK_DATATYPE &&
             arr->array[1].type == TOK_IDENTIFIER) {
-            var_arr->array[var_arr->length++] = (Variable){
+
+            var_arr->array[var_arr->length] = (Variable){
                 .type = assignDataType(arr->array[0].token_name),
                 .variable_name = arr->array[1].token_name,
-                .stack_offset = (var_arr->length - 1) ? var_arr->array[var_arr->length - 1].stack_offset + assignDataType(arr->array[0].token_name) : 0,
+                .stack_offset = (var_arr->length) ? (var_arr->array[var_arr->length - 1].stack_offset + assignDataType(arr->array[0].token_name)) : 0,
             };
-        } else if (arr->length == 3 &&
-                   arr->array[0].type == TOK_IDENTIFIER &&
+            var_arr->length++;
+            printf("%d\n", var_arr->array[var_arr->length - 1].stack_offset + assignDataType(arr->array[0].token_name));
+            var_arr->total_stack_space += assignDataType(arr->array[0].token_name);
+
+        } else if (arr->array[0].type == TOK_IDENTIFIER &&
                    arr->array[2].type == TOK_NUMBER &&
                    !strcmp(arr->array[1].token_name, "=")) {
-            ast_arr->array[ast_arr->length++] = (ASTNode){
-                .type = VAR_ASSIGNMENT,
-                .data.VAR_ASSIGNMENT = {
-                    .index = assignIndex(arr->array[0].token_name, var_arr),
-                    .data = atoi(arr->array[2].token_name),
-                },
-            };
+
+            ast_arr->array[ast_arr->length++] = AST_NEW(
+                VAR_ASSIGNMENT,
+                .index = assignIndex(arr->array[0].token_name, var_arr),
+                .data = atoi(arr->array[2].token_name));
         }
     }
     return ast;
@@ -63,6 +66,7 @@ int assignIndex(char *name, VariableArray *var_arr) {
         if (!strcmp(name, var_arr->array[i].variable_name))
             return i;
     }
+    THROW_ERR("The identifier %s has not been defined\n", name);
 }
 
 Datatype assignDataType(char *dt) {

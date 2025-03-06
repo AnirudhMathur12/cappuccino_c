@@ -20,6 +20,7 @@ VariableArray VariableArray_init(int capacity) {
     return (VariableArray){
         .length = 0,
         .capacity = capacity,
+        .total_stack_space = 0,
         .array = calloc(capacity, sizeof(Variable)),
     };
 }
