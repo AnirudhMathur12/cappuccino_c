@@ -6,5 +6,6 @@ Statements GenerateStatements(TokenArray tok_arr);
 AbstractSyntaxTree GenerateAbstractSyntaxTree(Statements statements);
 int assignIndex(char *name, VariableArray *var_arr);
 Datatype assignDataType(char *dt);
+int determine_size(Datatype dt);
 
 #endif

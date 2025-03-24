@@ -1,5 +1,2 @@
-int help;
-int kulk;
-help = 7;
-kulk = 8;
-help = 6;
+int k;
+k = 2 + 3;

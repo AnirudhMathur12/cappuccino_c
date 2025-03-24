@@ -1,7 +1,11 @@
 #include "gen_assembly.h"
+#include "data_types.h"
 #include <stdio.h>
 
+void emit(ASTNode *node);
+
 void generate_assembly(AbstractSyntaxTree ast) {
+
     FILE *output = fopen("main.s", "w");
     fprintf(output, ".global _main\n.align 4\n_main:\n");
 
@@ -10,14 +14,12 @@ void generate_assembly(AbstractSyntaxTree ast) {
     fprintf(output, "\t sub sp, sp, #%d\n", stack_space);
     fprintf(output, "\tmov w0, #0\n");
     fprintf(output, "\tstr wzr, [sp, #%d]\n", stack_space - 4);
-    for (int i = 0; i < ast.astNodeArr.length; i++) {
-        if (ast.astNodeArr.array[i].type == VAR_ASSIGNMENT) {
-            fprintf(output, "\tmov w8, #%d\n", ast.astNodeArr.array[i].data.VAR_ASSIGNMENT.data);
-            fprintf(output, "\tstr w8, [sp, #%d]\n", (stack_space - 4) - ((ast.varArr.array[ast.astNodeArr.array[i].data.VAR_ASSIGNMENT.index].stack_offset + ast.varArr.array[ast.astNodeArr.array[i].data.VAR_ASSIGNMENT.index].type) / 8));
-        }
-    }
 
     fprintf(output, "\tadd sp, sp, #%d\n", stack_space);
+    for (int i = 0; i < ast.astNodeArr.length; i++) {
+        ASTNode *node = ast.astNodeArr.array[i];
+        switch (node->type) { case ASSIGNMENT: }
+    }
 
     // sucessful exit
     fprintf(output, "\n\tmov x0, #0\n");

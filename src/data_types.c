@@ -25,11 +25,19 @@ VariableArray VariableArray_init(int capacity) {
     };
 }
 
+ASTNode *ast_new(ASTNode ast) {
+    ASTNode *ptr = malloc(sizeof(ASTNode));
+    if (ptr)
+        *ptr = ast;
+
+    return ptr;
+}
+
 ASTNodeArray ASTNodeArray_init(int capacity) {
     return (ASTNodeArray){
         .length = 0,
         .capacity = capacity,
-        .array = calloc(capacity, sizeof(ASTNode)),
+        .array = calloc(capacity, sizeof(ASTNode *)),
     };
 }
 

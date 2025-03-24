@@ -4,6 +4,12 @@
 #include <stdio.h>
 #include <string.h>
 
+#define OPSIZE 2
+const char *priority[OPSIZE] = {"=", "+"};
+
+ASTNode *form_tree(
+    int start_index, int end_index, TokenArray *arr, int op_index, VariableArray *var_arr);
+
 Statements GenerateStatements(TokenArray tok_arr) {
     Statements statements = Statements_init(128);
 
@@ -36,29 +42,62 @@ AbstractSyntaxTree GenerateAbstractSyntaxTree(Statements statements) {
 
     for (int i = 0; i < statements.length; i++) {
         TokenArray *arr = &statements.array[i];
-        if (arr->array[0].type == TOK_DATATYPE &&
+        if (arr->length == 2 && arr->array[0].type == TOK_DATATYPE &&
             arr->array[1].type == TOK_IDENTIFIER) {
 
             var_arr->array[var_arr->length] = (Variable){
                 .type = assignDataType(arr->array[0].token_name),
                 .variable_name = arr->array[1].token_name,
-                .stack_offset = (var_arr->length) ? (var_arr->array[var_arr->length - 1].stack_offset + assignDataType(arr->array[0].token_name)) : 0,
             };
+
+            var_arr->array[var_arr->length].stack_offset =
+                (var_arr->length) ? (var_arr->array[var_arr->length - 1].stack_offset +
+                                        determine_size(var_arr->array[var_arr->length].type))
+                                  : 0,
+            var_arr->total_stack_space += determine_size(var_arr->array[var_arr->length].type);
             var_arr->length++;
-            printf("%d\n", var_arr->array[var_arr->length - 1].stack_offset + assignDataType(arr->array[0].token_name));
-            var_arr->total_stack_space += assignDataType(arr->array[0].token_name);
+            // printf("%d\n", var_arr->array[var_arr->length - 1].stack_offset +
+            // assignDataType(arr->array[0].token_name));
 
-        } else if (arr->array[0].type == TOK_IDENTIFIER &&
-                   arr->array[2].type == TOK_NUMBER &&
-                   !strcmp(arr->array[1].token_name, "=")) {
-
-            ast_arr->array[ast_arr->length++] = AST_NEW(
-                VAR_ASSIGNMENT,
-                .index = assignIndex(arr->array[0].token_name, var_arr),
-                .data = atoi(arr->array[2].token_name));
+        } else {
+            ast_arr->array[ast_arr->length++] = form_tree(0, arr->length, arr, 0, var_arr);
+        }
+        if (ast_arr->length == ast_arr->capacity - 1) {
+            ast_arr->capacity *= 2.5;
+            ast_arr->array = realloc(ast_arr->array, ast_arr->capacity);
         }
     }
     return ast;
+}
+
+ASTNode *form_tree(
+    int start_index, int end_index, TokenArray *arr, int op_index, VariableArray *var_arr) {
+    for (int iter = op_index; iter < OPSIZE; iter++) {
+        for (int i = start_index; i < end_index; i++) {
+            if (arr->array[i].type == TOK_SPECIAL_SYMBOLS &&
+                !strcmp(arr->array[i].token_name, priority[iter])) {
+                char *op = arr->array[i].token_name;
+                if (!strcmp(op, "=")) {
+                    return AST_NEW(ASSIGNMENT,
+                        assignIndex(arr->array[i - 1].token_name, var_arr),
+                        form_tree(i + 1, end_index, arr, iter, var_arr));
+                }
+                if (!strcmp(op, "+")) {
+                    return AST_NEW(ADDITION,
+                        form_tree(start_index, i, arr, iter, var_arr),
+                        form_tree(i + 1, end_index, arr, iter, var_arr));
+                }
+            }
+        }
+    }
+    for (int i = start_index; i < end_index; i++) {
+        if (arr->array[i].type == TOK_NUMBER) {
+            return AST_NEW(INTEGER, atoi(arr->array[i].token_name));
+        }
+        if (arr->array[i].type == TOK_IDENTIFIER) {
+            return AST_NEW(VARIABLE, assignIndex(arr->array[i].token_name, var_arr));
+        }
+    }
 }
 
 int assignIndex(char *name, VariableArray *var_arr) {
@@ -67,6 +106,7 @@ int assignIndex(char *name, VariableArray *var_arr) {
             return i;
     }
     THROW_ERR("The identifier %s has not been defined\n", name);
+    return -1;
 }
 
 Datatype assignDataType(char *dt) {
@@ -76,4 +116,16 @@ Datatype assignDataType(char *dt) {
         return FLOAT;
     else if (!strcmp(dt, "char"))
         return CHAR;
+    return -1;
+}
+
+int determine_size(Datatype dt) {
+    switch (dt) {
+        case INT:
+            return 32;
+        case FLOAT:
+            return 32;
+        case CHAR:
+            return 1;
+    }
 }

@@ -3,8 +3,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-typedef enum { true = 1,
-    false = 0 } bool;
+typedef enum { true = 1, false = 0 } bool;
 
 #define KEYWORD_SIZE 3
 #define DATATYPES_SIZE 3
@@ -30,32 +29,10 @@ typedef struct {
     char *token_name;
 } Token;
 
-typedef struct ASTNode ASTNode;
-
-struct ASTNode {
-    enum {
-        VAR_ASSIGNMENT
-    } type;
-
-    union {
-        struct {
-            int index;
-            int data;
-        } VAR_ASSIGNMENT;
-    } data;
-};
-
-#define AST_NEW(type, ...)          \
-    (ASTNode) {                     \
-        type, {                     \
-            .type = { __VA_ARGS__ } \
-        }                           \
-    }
-
 typedef enum {
-    INT = 32,
-    FLOAT = 32,
-    CHAR = 8,
+    INT,
+    FLOAT,
+    CHAR,
 } Datatype;
 
 typedef struct {
@@ -63,6 +40,33 @@ typedef struct {
     char *variable_name;
     uint32_t stack_offset;
 } Variable;
+
+typedef struct ASTNode ASTNode;
+
+struct ASTNode {
+    enum { INTEGER, ADDITION, VARIABLE, ASSIGNMENT } type;
+
+    union {
+        struct {
+            ASTNode *node1;
+            ASTNode *node2;
+        } ADDITION;
+        struct {
+            int index;
+        } VARIABLE;
+        struct {
+            int data;
+        } INTEGER;
+        struct {
+            int index;
+            ASTNode *node;
+        } ASSIGNMENT;
+    } data;
+};
+
+ASTNode *ast_new(ASTNode ast);
+
+#define AST_NEW(type, ...) ast_new((ASTNode){type, {.type = {__VA_ARGS__}}})
 
 typedef struct {
     uint32_t length;
@@ -92,7 +96,7 @@ Statements Statements_init(int capacity);
 typedef struct {
     uint32_t length;
     uint32_t capacity;
-    ASTNode *array;
+    ASTNode **array;
 } ASTNodeArray;
 
 ASTNodeArray ASTNodeArray_init(int capacity);
