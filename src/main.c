@@ -80,28 +80,16 @@ int main(int argc, char **argv) {
     // }
 
     AbstractSyntaxTree ast = GenerateAbstractSyntaxTree(statements);
-    // for (int i = 0; i < ast.varArr.length; i++) {
-    //     printf("Variable Index: %d\n", i);
-    //     printf("\tVariable Name: %s\n", ast.varArr.array[i].variable_name);
-    //     printf("\tVariable Type: %d\n", ast.varArr.array[i].type);
-    // }
-    // for (int i = 0; i < ast.astNodeArr.length; i++) {
-    //     print_ast(ast.astNodeArr.array[i], 0);
-    // }
-    // for (int i = 0; i < ast.varArr.length; i++) {
-    //     printf("Type: %d, Name: %s, Offset: %d\n",
-    //         ast.varArr.array[i].type,
-    //         ast.varArr.array[i].variable_name,
-    //         ast.varArr.array[i].stack_offset);
-    // }
-    //
-    // for (int i = 0; i < ast.astNodeArr.length; i++) {
-    //     printf("Index: %d, Data: %d\n",
-    //         ast.astNodeArr.array[i]->data.VAR_ASSIGNMENT.index,
-    //         ast.astNodeArr.array[i]->data.VAR_ASSIGNMENT.data);
-    // }
+    for (int i = 0; i < ast.varArr.length; i++) {
+        printf("Variable Index: %d\n", i);
+        printf("\tVariable Name: %s\n", ast.varArr.array[i].variable_name);
+        printf("\tVariable Type: %d\n", ast.varArr.array[i].type);
+    }
+    for (int i = 0; i < ast.astNodeArr.length; i++) {
+        print_ast(ast.astNodeArr.array[i], 0);
+    }
 
-    // generate_assembly(ast);
+    generate_assembly(ast);
 
     if (file_data != NULL) {
         free(file_data);
