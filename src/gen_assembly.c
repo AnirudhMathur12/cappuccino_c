@@ -2,7 +2,7 @@
 #include "data_types.h"
 #include <stdio.h>
 
-void emit(ASTNode *node);
+void emit(ASTNode *node) {}
 
 void generate_assembly(AbstractSyntaxTree ast) {
 
@@ -18,7 +18,10 @@ void generate_assembly(AbstractSyntaxTree ast) {
     fprintf(output, "\tadd sp, sp, #%d\n", stack_space);
     for (int i = 0; i < ast.astNodeArr.length; i++) {
         ASTNode *node = ast.astNodeArr.array[i];
-        switch (node->type) { case ASSIGNMENT: }
+        switch (node->type) {
+            case ASSIGNMENT:
+                break;
+        }
     }
 
     // sucessful exit
