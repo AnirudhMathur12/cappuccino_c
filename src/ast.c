@@ -2,10 +2,11 @@
 #include "data_types.h"
 #include "utils.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
-#define OPSIZE 2
-const char *priority[OPSIZE] = {"=", "+"};
+#define OPSIZE 3
+const char *priority[OPSIZE] = {"=", "+", "-"};
 
 ASTNode *form_tree(
     int start_index, int end_index, TokenArray *arr, int op_index, VariableArray *var_arr);
@@ -14,21 +15,26 @@ Statements GenerateStatements(TokenArray tok_arr) {
     Statements statements = Statements_init(128);
 
     statements.array[statements.length] = TokenArray_init(8);
-    TokenArray *curr = &statements.array[statements.length];
+    TokenArray arr = TokenArray_init(8);
     for (int i = 0; i < tok_arr.length; i++) {
         if (tok_arr.array[i].type == TOK_LINE_TERMINATOR) {
-            statements.array[++statements.length] = TokenArray_init(8);
+            statements.array[statements.length++] = arr;
             if (statements.length == statements.capacity - 1) {
                 statements.capacity = (int)(statements.capacity * 2.5);
-                statements.array = realloc(statements.array, statements.capacity);
+                statements.array =
+                    realloc(statements.array, statements.capacity * sizeof(TokenArray));
             }
-            curr = &statements.array[statements.length];
+            arr = TokenArray_init(8);
             continue;
         }
-        curr->array[curr->length++] = tok_arr.array[i];
-        if (curr->length == curr->capacity - 1) {
-            curr->capacity = (int)(curr->capacity * 2.5);
-            curr->array = realloc(curr->array, curr->capacity);
+        // arr.array[arr.length].type = tok_arr.array[i].type;
+        // arr.array[arr.length].token_name = malloc(strlen(tok_arr.array[i].token_name) + 1);
+        // strcpy(arr.array[arr.length].token_name, tok_arr.array[i].token_name);
+        // arr.array[arr.length].token_name[strlen(tok_arr.array[i].token_name)] = '\0';
+        arr.array[arr.length++] = tok_arr.array[i];
+        if (arr.length == arr.capacity - 1) {
+            arr.capacity = (int)(arr.capacity * 2.5);
+            arr.array = realloc(arr.array, arr.capacity * sizeof(Token));
         }
     }
 
@@ -64,7 +70,7 @@ AbstractSyntaxTree GenerateAbstractSyntaxTree(Statements statements) {
         }
         if (ast_arr->length == ast_arr->capacity - 1) {
             ast_arr->capacity *= 2.5;
-            ast_arr->array = realloc(ast_arr->array, ast_arr->capacity);
+            ast_arr->array = realloc(ast_arr->array, ast_arr->capacity * sizeof(ASTNode *));
         }
     }
     return ast;
@@ -84,6 +90,11 @@ ASTNode *form_tree(
                 }
                 if (!strcmp(op, "+")) {
                     return AST_NEW(ADDITION,
+                        form_tree(start_index, i, arr, iter, var_arr),
+                        form_tree(i + 1, end_index, arr, iter, var_arr));
+                }
+                if (!strcmp(op, "-")) {
+                    return AST_NEW(SUBTRACTION,
                         form_tree(start_index, i, arr, iter, var_arr),
                         form_tree(i + 1, end_index, arr, iter, var_arr));
                 }

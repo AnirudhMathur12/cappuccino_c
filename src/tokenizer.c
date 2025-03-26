@@ -8,10 +8,10 @@ int current;
 
 TokenArray tokenize(char *data, char *file_name) {
 
-    tok_arr = TokenArray_init(128);
+    tok_arr = TokenArray_init(10);
     current = 0;
 
-    char *buffer = malloc(1024);
+    char *buffer = calloc(1024, 1);
 
     int offset = 0;
 

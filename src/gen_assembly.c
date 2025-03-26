@@ -10,13 +10,28 @@ void emit(FILE *out, ASTNode *node, VariableArray *var_arr, int priority) {
             emit(out, node->data.ASSIGNMENT.node, var_arr, 0);
             fprintf(out,
                 "\tstr w8, [sp, #%d]\n",
-                stack_space - 8 - var_arr->array[node->data.ASSIGNMENT.index].stack_offset);
+                stack_space - 8 - var_arr->array[node->data.ASSIGNMENT.index].stack_offset / 8);
             break;
         case ADDITION:
-            emit(out, node->data.ADDITION.node1, var_arr, 0);
-            emit(out, node->data.ADDITION.node2, var_arr, 1);
-
+            if (node->data.ADDITION.node1->type != INTEGER) {
+                emit(out, node->data.ADDITION.node1, var_arr, 0);
+                emit(out, node->data.ADDITION.node2, var_arr, 1);
+            } else {
+                emit(out, node->data.ADDITION.node2, var_arr, 0);
+                emit(out, node->data.ADDITION.node1, var_arr, 1);
+            }
             fprintf(out, "\tadd w8, w8, w9\n");
+            break;
+        case SUBTRACTION:
+            if (node->data.SUBTRACTION.node1->type != INTEGER) {
+                emit(out, node->data.SUBTRACTION.node1, var_arr, 0);
+                emit(out, node->data.SUBTRACTION.node2, var_arr, 1);
+                fprintf(out, "\tsub w8, w8, w9\n");
+            } else {
+                emit(out, node->data.SUBTRACTION.node2, var_arr, 0);
+                emit(out, node->data.SUBTRACTION.node1, var_arr, 1);
+                fprintf(out, "\tsub w8, w9, w8\n");
+            }
             break;
         case INTEGER:
             fprintf(out, "\tmov w%d, #%d\n", 8 + priority, node->data.INTEGER.data);
@@ -25,7 +40,7 @@ void emit(FILE *out, ASTNode *node, VariableArray *var_arr, int priority) {
             fprintf(out,
                 "\tldr w%d, [sp, #%d]\n",
                 8 + priority,
-                stack_space - 8 - var_arr->array[node->data.ASSIGNMENT.index].stack_offset);
+                stack_space - 8 - var_arr->array[node->data.ASSIGNMENT.index].stack_offset / 8);
     }
 }
 

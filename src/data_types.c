@@ -8,6 +8,11 @@ TokenArray TokenArray_init(int capacity) {
     };
 }
 
+int TokenArray_insert(TokenArray *arr, int index, Token tok) {
+    arr->array[arr->length++] = tok;
+    return 0;
+}
+
 Statements Statements_init(int capacity) {
     return (Statements){
         .length = 0,

@@ -44,19 +44,23 @@ typedef struct {
 typedef struct ASTNode ASTNode;
 
 struct ASTNode {
-    enum { INTEGER, ADDITION, VARIABLE, ASSIGNMENT } type;
+    enum { INTEGER, ADDITION, SUBTRACTION, VARIABLE, ASSIGNMENT } type;
 
     union {
+        struct {
+            int data;
+        } INTEGER;
         struct {
             ASTNode *node1;
             ASTNode *node2;
         } ADDITION;
         struct {
+            ASTNode *node1;
+            ASTNode *node2;
+        } SUBTRACTION;
+        struct {
             int index;
         } VARIABLE;
-        struct {
-            int data;
-        } INTEGER;
         struct {
             int index;
             ASTNode *node;
