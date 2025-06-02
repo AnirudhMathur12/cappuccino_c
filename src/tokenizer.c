@@ -3,15 +3,12 @@
 #include "utils.h"
 
 TokenArray tok_arr;
-int current;
-// int max;
 
 TokenArray tokenize(char *data, char *file_name) {
 
     tok_arr = TokenArray_init(10);
-    current = 0;
 
-    char *buffer = calloc(1024, 1);
+    char *buffer = malloc(1024);
 
     int offset = 0;
 
@@ -23,7 +20,6 @@ TokenArray tokenize(char *data, char *file_name) {
             if (strlen(buffer)) {
                 buffer_to_token(buffer);
                 tok_arr.length++;
-                current++;
                 offset = i;
             }
             if (!ISWHITESPACE(data[i])) {
@@ -31,14 +27,13 @@ TokenArray tokenize(char *data, char *file_name) {
                 buffer[i - offset + 1] = '\0';
                 buffer_to_token(buffer);
                 tok_arr.length++;
-                current++;
             }
             offset = i + 1;
         }
 
-        if (current == tok_arr.capacity - 1) {
+        if (tok_arr.length >= tok_arr.capacity - 1) {
             tok_arr.capacity = (int)(tok_arr.capacity * 2.5);
-            tok_arr.array = realloc(tok_arr.array, (int)tok_arr.capacity * sizeof(Token));
+            tok_arr.array = realloc(tok_arr.array, tok_arr.capacity * sizeof(Token));
             // printf("Updated token array to size %d\n", tok_arr.capacity);
         }
     }
@@ -64,6 +59,13 @@ void buffer_to_token(char *buffer) {
             return;
         }
     }
+    for (int i = 0; i < COMPARISION_OPERATORS_SIZE; i++) {
+        if (!strcmp(buffer, comparision_operators[i])) {
+            tok_arr.array[tok_arr.length].type = TOK_COMPARISION_OPERATOR;
+            return;
+        }
+    }
+
     bool pure_number = true;
     for (int i = 0; i < strlen(buffer); i++) {
         if (!ISNUM(buffer[i])) {

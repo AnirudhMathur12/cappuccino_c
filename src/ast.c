@@ -5,8 +5,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define OPSIZE 3
-const char *priority[OPSIZE] = {"=", "+", "-"};
+#define OPSIZE 5
+const char *priority[OPSIZE] = {"=", "<", ">", "+", "-"};
 
 ASTNode *form_tree(
     int start_index, int end_index, TokenArray *arr, int op_index, VariableArray *var_arr);
@@ -17,7 +17,9 @@ Statements GenerateStatements(TokenArray tok_arr) {
     statements.array[statements.length] = TokenArray_init(8);
     TokenArray arr = TokenArray_init(8);
     for (int i = 0; i < tok_arr.length; i++) {
-        if (tok_arr.array[i].type == TOK_LINE_TERMINATOR) {
+        if (tok_arr.array[i].type == TOK_LINE_TERMINATOR ||
+            tok_arr.array[i].type == TOK_PARENTHESES_START ||
+            tok_arr.array[i].type == TOK_PARENTHESES_END) {
             statements.array[statements.length++] = arr;
             if (statements.length == statements.capacity - 1) {
                 statements.capacity = (int)(statements.capacity * 2.5);
@@ -35,6 +37,14 @@ Statements GenerateStatements(TokenArray tok_arr) {
         if (arr.length == arr.capacity - 1) {
             arr.capacity = (int)(arr.capacity * 2.5);
             arr.array = realloc(arr.array, arr.capacity * sizeof(Token));
+        }
+    }
+
+    if (arr.length > 0) {
+        statements.array[statements.length++] = arr;
+        if (statements.length == statements.capacity - 1) {
+            statements.capacity = (int)(statements.capacity * 2.5);
+            statements.array = realloc(statements.array, statements.capacity * sizeof(TokenArray));
         }
     }
 
@@ -80,7 +90,8 @@ ASTNode *form_tree(
     int start_index, int end_index, TokenArray *arr, int op_index, VariableArray *var_arr) {
     for (int iter = op_index; iter < OPSIZE; iter++) {
         for (int i = start_index; i < end_index; i++) {
-            if (arr->array[i].type == TOK_SPECIAL_SYMBOLS &&
+            if ((arr->array[i].type == TOK_SPECIAL_SYMBOLS ||
+                    arr->array[i].type == TOK_COMPARISION_OPERATOR) &&
                 !strcmp(arr->array[i].token_name, priority[iter])) {
                 char *op = arr->array[i].token_name;
                 if (!strcmp(op, "=")) {
@@ -98,10 +109,20 @@ ASTNode *form_tree(
                         form_tree(start_index, i, arr, iter, var_arr),
                         form_tree(i + 1, end_index, arr, iter, var_arr));
                 }
+                if (!strcmp(op, ">")) {
+                    printf("simga\n");
+                    return AST_NEW(CONDITIONAL,
+                        GREATER,
+                        form_tree(start_index, i, arr, iter, var_arr),
+                        form_tree(i + 1, end_index, arr, iter, var_arr));
+                }
             }
         }
     }
     for (int i = start_index; i < end_index; i++) {
+        // if(arr->array[i].type == TOK_KEYWORD) {
+        //     if()
+        // }
         if (arr->array[i].type == TOK_NUMBER) {
             return AST_NEW(INTEGER, atoi(arr->array[i].token_name));
         }

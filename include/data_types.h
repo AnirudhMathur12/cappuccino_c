@@ -7,9 +7,11 @@ typedef enum { true = 1, false = 0 } bool;
 
 #define KEYWORD_SIZE 3
 #define DATATYPES_SIZE 3
+#define COMPARISION_OPERATORS_SIZE 3
 
 static char *keywords[KEYWORD_SIZE] = {"if", "else", "while"};
 static char *datatypes[DATATYPES_SIZE] = {"int", "float", "string"};
+static char *comparision_operators[COMPARISION_OPERATORS_SIZE] = {">", "<", "=="};
 
 typedef enum {
     TOK_IDENTIFIER,
@@ -20,6 +22,7 @@ typedef enum {
     TOK_CURLY_BRACKETS_START,
     TOK_CURLY_BRACKETS_END,
     TOK_SPECIAL_SYMBOLS,
+    TOK_COMPARISION_OPERATOR,
     TOK_PARENTHESES_START,
     TOK_PARENTHESES_END
 } TokenType;
@@ -42,9 +45,10 @@ typedef struct {
 } Variable;
 
 typedef struct ASTNode ASTNode;
+typedef struct ASTNodeArray ASTNodeArray;
 
 struct ASTNode {
-    enum { INTEGER, ADDITION, SUBTRACTION, VARIABLE, ASSIGNMENT } type;
+    enum { INTEGER, ADDITION, SUBTRACTION, VARIABLE, ASSIGNMENT, WHILE_LOOP, CONDITIONAL } type;
 
     union {
         struct {
@@ -65,6 +69,15 @@ struct ASTNode {
             int index;
             ASTNode *node;
         } ASSIGNMENT;
+        struct {
+            ASTNode *condition;
+            ASTNodeArray *content;
+        } WHILE_LOOP;
+        struct {
+            enum { GREATER, LESSER, EQUAL } type;
+            ASTNode *node1;
+            ASTNode *node2;
+        } CONDITIONAL;
     } data;
 };
 
@@ -97,11 +110,11 @@ typedef struct {
 
 Statements Statements_init(int capacity);
 
-typedef struct {
+struct ASTNodeArray {
     uint32_t length;
     uint32_t capacity;
     ASTNode **array;
-} ASTNodeArray;
+};
 
 ASTNodeArray ASTNodeArray_init(int capacity);
 
