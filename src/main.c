@@ -12,6 +12,8 @@ int main(int argc, char **argv) {
     char *file_data = read_file(argv[1]);
     if (!file_data) {
         printf("Error: Could not load file: %s", argv[1]);
+        printf("This is a test\n");
+        // dev branch in git
         // checking out branching in git
         return 0;
     }

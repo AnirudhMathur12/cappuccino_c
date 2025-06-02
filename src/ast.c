@@ -110,7 +110,6 @@ ASTNode *form_tree(
                         form_tree(i + 1, end_index, arr, iter, var_arr));
                 }
                 if (!strcmp(op, ">")) {
-                    printf("simga\n");
                     return AST_NEW(CONDITIONAL,
                         GREATER,
                         form_tree(start_index, i, arr, iter, var_arr),
@@ -120,9 +119,11 @@ ASTNode *form_tree(
         }
     }
     for (int i = start_index; i < end_index; i++) {
-        // if(arr->array[i].type == TOK_KEYWORD) {
-        //     if()
-        // }
+        if (arr->array[i].type == TOK_KEYWORD) {
+            // if(arr->array[i].token_name == "if") {
+            //     return AST_NEW
+            // }
+        }
         if (arr->array[i].type == TOK_NUMBER) {
             return AST_NEW(INTEGER, atoi(arr->array[i].token_name));
         }
