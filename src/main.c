@@ -11,7 +11,8 @@ void print_ast(ASTNode *node, int indent);
 int main(int argc, char **argv) {
     char *file_data = read_file(argv[1]);
     if (!file_data) {
-        printf("What the fuck? I thought I could trust you.\n");
+        printf("Error: Could not load file: %s", argv[1]);
+        // checking out branching in git
         return 0;
     }
 
