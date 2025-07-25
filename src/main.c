@@ -21,8 +21,8 @@ int main(int argc, char **argv) {
     TokenArray tok_arr = tokenize(file_data, argv[1]);
     printf("\n");
     for (int i = 0; i < tok_arr.length; i++) {
-        printf(
-            "Token Name: %s, Token Type: %d\n", tok_arr.array[i].token_name, tok_arr.array[i].type);
+        printf("Token Name: %s, Token Type: %d\n", tok_arr.array[i].token_name,
+               tok_arr.array[i].type);
     }
     printf("%d\n", tok_arr.length);
     printf("%d\n", tok_arr.capacity);
@@ -32,8 +32,8 @@ int main(int argc, char **argv) {
         TokenArray arr = statements.array[i];
         printf("Statement %d\n", i + 1);
         for (int j = 0; j < arr.length; j++) {
-            printf(
-                "\tToken Name: %s\tToken Type: %d\n", arr.array[j].token_name, arr.array[j].type);
+            printf("\tToken Name: %s\tToken Type: %d\n",
+                   arr.array[j].token_name, arr.array[j].type);
         }
     }
 
@@ -47,7 +47,7 @@ int main(int argc, char **argv) {
         print_ast(ast.astNodeArr.array[i], 0);
     }
 
-    // generate_assembly(ast);
+    generate_assembly(ast);
 
     if (file_data != NULL) {
         free(file_data);
@@ -59,72 +59,58 @@ int main(int argc, char **argv) {
 
 void print_ast(ASTNode *node, int indent) {
     switch (node->type) {
-        case INTEGER:
-            for (int i = 0; i < indent; i++)
-                printf("\t");
-            printf("Type: INTEGER\n");
-            for (int i = 0; i < indent; i++)
-                printf("\t");
-            printf("Data: %d\n", node->data.INTEGER.data);
-            break;
-        case VARIABLE:
-            for (int i = 0; i < indent; i++)
-                printf("\t");
-            printf("Type: VARIABLE\n");
-            for (int i = 0; i < indent; i++)
-                printf("\t");
-            printf("Variable Index: %d\n", node->data.VARIABLE.index);
-            break;
-        case ADDITION:
-            for (int i = 0; i < indent; i++)
-                printf("\t");
-            printf("Type: ADDITION\n");
-            for (int i = 0; i < indent; i++)
-                printf("\t");
-            printf("Node 1:\n");
-            print_ast(node->data.ADDITION.node1, indent + 1);
-            for (int i = 0; i < indent; i++)
-                printf("\t");
-            printf("Node 2:\n");
-            print_ast(node->data.ADDITION.node2, indent + 1);
-            break;
-        case SUBTRACTION:
-            for (int i = 0; i < indent; i++)
-                printf("\t");
-            printf("Type: SUBTRACTION\n");
-            for (int i = 0; i < indent; i++)
-                printf("\t");
-            printf("Node 1:\n");
-            print_ast(node->data.SUBTRACTION.node1, indent + 1);
-            for (int i = 0; i < indent; i++)
-                printf("\t");
-            printf("Node 2:\n");
-            print_ast(node->data.SUBTRACTION.node2, indent + 1);
-            break;
-        case ASSIGNMENT:
-            for (int i = 0; i < indent; i++)
-                printf("\t");
-            printf("Type: ASSIGNMENT\n");
+    case INTEGER:
+        for (int i = 0; i < indent; i++)
+            printf("\t");
+        printf("Type: INTEGER\n");
+        for (int i = 0; i < indent; i++)
+            printf("\t");
+        printf("Data: %d\n", node->data.INTEGER.data);
+        break;
+    case VARIABLE:
+        for (int i = 0; i < indent; i++)
+            printf("\t");
+        printf("Type: VARIABLE\n");
+        for (int i = 0; i < indent; i++)
+            printf("\t");
+        printf("Variable Index: %d\n", node->data.VARIABLE.index);
+        break;
+    case ADDITION:
+        for (int i = 0; i < indent; i++)
+            printf("\t");
+        printf("Type: ADDITION\n");
+        for (int i = 0; i < indent; i++)
+            printf("\t");
+        printf("Node 1:\n");
+        print_ast(node->data.ADDITION.node1, indent + 1);
+        for (int i = 0; i < indent; i++)
+            printf("\t");
+        printf("Node 2:\n");
+        print_ast(node->data.ADDITION.node2, indent + 1);
+        break;
+    case SUBTRACTION:
+        for (int i = 0; i < indent; i++)
+            printf("\t");
+        printf("Type: SUBTRACTION\n");
+        for (int i = 0; i < indent; i++)
+            printf("\t");
+        printf("Node 1:\n");
+        print_ast(node->data.SUBTRACTION.node1, indent + 1);
+        for (int i = 0; i < indent; i++)
+            printf("\t");
+        printf("Node 2:\n");
+        print_ast(node->data.SUBTRACTION.node2, indent + 1);
+        break;
+    case ASSIGNMENT:
+        for (int i = 0; i < indent; i++)
+            printf("\t");
+        printf("Type: ASSIGNMENT\n");
 
-            for (int i = 0; i < indent; i++)
-                printf("\t");
-            printf("Variable Index: %d\n", node->data.ASSIGNMENT.index);
-            printf("Node:\n");
-            print_ast(node->data.ASSIGNMENT.node, indent + 1);
-            break;
-        case CONDITIONAL:
-            for (int i = 0; i < indent; i++)
-                printf("\t");
-            printf("Type: CONDITIONAL\n");
-            for (int i = 0; i < indent; i++)
-                printf("\t");
-            // printf("Contition ")
-            printf("Node 1:\n");
-            print_ast(node->data.CONDITIONAL.node1, indent + 1);
-            for (int i = 0; i < indent; i++)
-                printf("\t");
-            printf("Node 2:\n");
-            print_ast(node->data.CONDITIONAL.node2, indent + 1);
-            break;
+        for (int i = 0; i < indent; i++)
+            printf("\t");
+        printf("Variable Index: %d\n", node->data.ASSIGNMENT.index);
+        printf("Node:\n");
+        print_ast(node->data.ASSIGNMENT.node, indent + 1);
+        break;
     }
 }

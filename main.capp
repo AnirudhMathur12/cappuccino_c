@@ -1,5 +1,4 @@
 int i;
+int j;
 i = 2 + 3;
-while(i > 3) {
-    i = i + 1;
-}
+j = 7 - i;

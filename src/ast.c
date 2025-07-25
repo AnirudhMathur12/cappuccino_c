@@ -8,8 +8,8 @@
 #define OPSIZE 5
 const char *priority[OPSIZE] = {"=", "<", ">", "+", "-"};
 
-ASTNode *form_tree(
-    int start_index, int end_index, TokenArray *arr, int op_index, VariableArray *var_arr);
+ASTNode *form_tree(int start_index, int end_index, TokenArray *arr,
+                   int op_index, VariableArray *var_arr);
 
 Statements GenerateStatements(TokenArray tok_arr) {
     Statements statements = Statements_init(128);
@@ -23,16 +23,19 @@ Statements GenerateStatements(TokenArray tok_arr) {
             statements.array[statements.length++] = arr;
             if (statements.length == statements.capacity - 1) {
                 statements.capacity = (int)(statements.capacity * 2.5);
-                statements.array =
-                    realloc(statements.array, statements.capacity * sizeof(TokenArray));
+                statements.array = realloc(
+                    statements.array, statements.capacity * sizeof(TokenArray));
             }
             arr = TokenArray_init(8);
             continue;
         }
         // arr.array[arr.length].type = tok_arr.array[i].type;
-        // arr.array[arr.length].token_name = malloc(strlen(tok_arr.array[i].token_name) + 1);
-        // strcpy(arr.array[arr.length].token_name, tok_arr.array[i].token_name);
-        // arr.array[arr.length].token_name[strlen(tok_arr.array[i].token_name)] = '\0';
+        // arr.array[arr.length].token_name =
+        // malloc(strlen(tok_arr.array[i].token_name) + 1);
+        // strcpy(arr.array[arr.length].token_name,
+        // tok_arr.array[i].token_name);
+        // arr.array[arr.length].token_name[strlen(tok_arr.array[i].token_name)]
+        // = '\0';
         arr.array[arr.length++] = tok_arr.array[i];
         if (arr.length == arr.capacity - 1) {
             arr.capacity = (int)(arr.capacity * 2.5);
@@ -44,7 +47,8 @@ Statements GenerateStatements(TokenArray tok_arr) {
         statements.array[statements.length++] = arr;
         if (statements.length == statements.capacity - 1) {
             statements.capacity = (int)(statements.capacity * 2.5);
-            statements.array = realloc(statements.array, statements.capacity * sizeof(TokenArray));
+            statements.array = realloc(
+                statements.array, statements.capacity * sizeof(TokenArray));
         }
     }
 
@@ -67,51 +71,51 @@ AbstractSyntaxTree GenerateAbstractSyntaxTree(Statements statements) {
             };
 
             var_arr->array[var_arr->length].stack_offset =
-                (var_arr->length) ? (var_arr->array[var_arr->length - 1].stack_offset +
-                                        determine_size(var_arr->array[var_arr->length].type))
-                                  : 0,
-            var_arr->total_stack_space += determine_size(var_arr->array[var_arr->length].type);
+                (var_arr->length)
+                    ? (var_arr->array[var_arr->length - 1].stack_offset +
+                       determine_size(var_arr->array[var_arr->length].type))
+                    : 0,
+            var_arr->total_stack_space +=
+                determine_size(var_arr->array[var_arr->length].type);
             var_arr->length++;
             // printf("%d\n", var_arr->array[var_arr->length - 1].stack_offset +
             // assignDataType(arr->array[0].token_name));
 
         } else {
-            ast_arr->array[ast_arr->length++] = form_tree(0, arr->length, arr, 0, var_arr);
+            ast_arr->array[ast_arr->length++] =
+                form_tree(0, arr->length, arr, 0, var_arr);
         }
         if (ast_arr->length == ast_arr->capacity - 1) {
             ast_arr->capacity *= 2.5;
-            ast_arr->array = realloc(ast_arr->array, ast_arr->capacity * sizeof(ASTNode *));
+            ast_arr->array =
+                realloc(ast_arr->array, ast_arr->capacity * sizeof(ASTNode *));
         }
     }
     return ast;
 }
 
-ASTNode *form_tree(
-    int start_index, int end_index, TokenArray *arr, int op_index, VariableArray *var_arr) {
+ASTNode *form_tree(int start_index, int end_index, TokenArray *arr,
+                   int op_index, VariableArray *var_arr) {
     for (int iter = op_index; iter < OPSIZE; iter++) {
         for (int i = start_index; i < end_index; i++) {
             if ((arr->array[i].type == TOK_SPECIAL_SYMBOLS ||
-                    arr->array[i].type == TOK_COMPARISION_OPERATOR) &&
+                 arr->array[i].type == TOK_COMPARISION_OPERATOR) &&
                 !strcmp(arr->array[i].token_name, priority[iter])) {
                 char *op = arr->array[i].token_name;
                 if (!strcmp(op, "=")) {
-                    return AST_NEW(ASSIGNMENT,
+                    return AST_NEW(
+                        ASSIGNMENT,
                         assignIndex(arr->array[i - 1].token_name, var_arr),
                         form_tree(i + 1, end_index, arr, iter, var_arr));
                 }
                 if (!strcmp(op, "+")) {
-                    return AST_NEW(ADDITION,
-                        form_tree(start_index, i, arr, iter, var_arr),
+                    return AST_NEW(
+                        ADDITION, form_tree(start_index, i, arr, iter, var_arr),
                         form_tree(i + 1, end_index, arr, iter, var_arr));
                 }
                 if (!strcmp(op, "-")) {
-                    return AST_NEW(SUBTRACTION,
-                        form_tree(start_index, i, arr, iter, var_arr),
-                        form_tree(i + 1, end_index, arr, iter, var_arr));
-                }
-                if (!strcmp(op, ">")) {
-                    return AST_NEW(CONDITIONAL,
-                        GREATER,
+                    return AST_NEW(
+                        SUBTRACTION,
                         form_tree(start_index, i, arr, iter, var_arr),
                         form_tree(i + 1, end_index, arr, iter, var_arr));
                 }
@@ -128,7 +132,8 @@ ASTNode *form_tree(
             return AST_NEW(INTEGER, atoi(arr->array[i].token_name));
         }
         if (arr->array[i].type == TOK_IDENTIFIER) {
-            return AST_NEW(VARIABLE, assignIndex(arr->array[i].token_name, var_arr));
+            return AST_NEW(VARIABLE,
+                           assignIndex(arr->array[i].token_name, var_arr));
         }
     }
 }
@@ -154,11 +159,11 @@ Datatype assignDataType(char *dt) {
 
 int determine_size(Datatype dt) {
     switch (dt) {
-        case INT:
-            return 32;
-        case FLOAT:
-            return 32;
-        case CHAR:
-            return 1;
+    case INT:
+        return 32;
+    case FLOAT:
+        return 32;
+    case CHAR:
+        return 1;
     }
 }
