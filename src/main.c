@@ -17,7 +17,7 @@ int main(int argc, char **argv) {
         printf("This is a test\n");
         // dev branch in git
         // checking out branching in git
-        return 0;
+        return 1;
     }
 
     TokenArray tok_arr = tokenize(file_data, argv[1]);
