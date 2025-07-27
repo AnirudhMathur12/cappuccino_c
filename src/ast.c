@@ -119,6 +119,12 @@ ASTNode *form_tree(int start_index, int end_index, TokenArray *arr,
                         form_tree(start_index, i, arr, iter, var_arr),
                         form_tree(i + 1, end_index, arr, iter, var_arr));
                 }
+                if (!strcmp(op, ">")) {
+                    return AST_NEW(
+                        CONDITIONAL, GREATER,
+                        form_tree(start_index, i, arr, iter, var_arr),
+                        form_tree(i + 1, end_index, arr, iter, var_arr));
+                }
             }
         }
     }

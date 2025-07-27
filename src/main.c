@@ -6,8 +6,6 @@
 #include <assert.h>
 #include <stdio.h>
 
-// while loop feauture branch
-
 void print_ast(ASTNode *node, int indent);
 
 int main(int argc, char **argv) {
@@ -15,8 +13,6 @@ int main(int argc, char **argv) {
     if (!file_data) {
         printf("Error: Could not load file: %s", argv[1]);
         printf("This is a test\n");
-        // dev branch in git
-        // checking out branching in git
         return 1;
     }
 
@@ -114,5 +110,16 @@ void print_ast(ASTNode *node, int indent) {
         printf("Node:\n");
         print_ast(node->data.ASSIGNMENT.node, indent + 1);
         break;
+    case CONDITIONAL:
+        for (int i = 0; i < indent; i++)
+            printf("\t");
+        printf("Type: CONDITIONAL\n");
+
+        for (int i = 0; i < indent; i++)
+            printf("\t");
+        printf("\tLHS: \n");
+        print_ast(node->data.CONDITIONAL.node1, indent + 2);
+        printf("\tRHS: \n");
+        print_ast(node->data.CONDITIONAL.node2, indent + 2);
     }
 }

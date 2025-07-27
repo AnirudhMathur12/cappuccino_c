@@ -55,6 +55,8 @@ struct ASTNode {
             SUBTRACTION,
             VARIABLE,
             ASSIGNMENT,
+            WHILE_LOOP,
+            CONDITIONAL
         } type;
 
         union {
@@ -76,6 +78,15 @@ struct ASTNode {
                         int index;
                         ASTNode *node;
                 } ASSIGNMENT;
+                struct {
+                        ASTNode *condition;
+                        ASTNodeArray *content;
+                } WHILE_LOOP;
+                struct {
+                        enum { GREATER, LESSER, EQUALS } type;
+                        ASTNode *node1;
+                        ASTNode *node2;
+                } CONDITIONAL;
         } data;
 };
 
