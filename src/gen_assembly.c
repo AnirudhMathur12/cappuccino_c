@@ -4,6 +4,8 @@
 
 uint32_t stack_space;
 
+uint32_t cond_branch_num = 0;
+
 void emit(FILE *out, ASTNode *node, VariableArray *var_arr, int priority) {
     switch (node->type) {
     case ASSIGNMENT:
@@ -42,6 +44,21 @@ void emit(FILE *out, ASTNode *node, VariableArray *var_arr, int priority) {
                 stack_space - 8 -
                     var_arr->array[node->data.ASSIGNMENT.index].stack_offset /
                         8);
+        break;
+    case CONDITIONAL:
+        emit(out, node->data.CONDITIONAL.node1, var_arr, 0);
+        emit(out, node->data.CONDITIONAL.node2, var_arr, 1);
+
+        fprintf(out, "\tsubs w8, w8, w9\n");
+        switch (node->data.CONDITIONAL.type) {
+        case GREATER:
+            fprintf(out, "\tb.le CB_%d\n", cond_branch_num++);
+            break;
+        }
+
+        fprintf(out, "\tb CB_%d\n", cond_branch_num++);
+        fprintf(out, "\tCB_%d:\n", cond_branch_num - 2);
+        fprintf(out, "\tCB_%d:\n", cond_branch_num - 1);
     }
 }
 

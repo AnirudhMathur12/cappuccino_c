@@ -130,9 +130,6 @@ ASTNode *form_tree(int start_index, int end_index, TokenArray *arr,
     }
     for (int i = start_index; i < end_index; i++) {
         if (arr->array[i].type == TOK_KEYWORD) {
-            // if(arr->array[i].token_name == "if") {
-            //     return AST_NEW
-            // }
         }
         if (arr->array[i].type == TOK_NUMBER) {
             return AST_NEW(INTEGER, atoi(arr->array[i].token_name));
