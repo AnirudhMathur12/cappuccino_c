@@ -24,4 +24,4 @@ Here's what the compiler can do:-
 
 
 
-  - Can process conditional statements (a > b; etc), but these were planned to be released with if and while statement's implementation.
+  - Can process conditional statements (a > b; etc), but these were planned to be released with if and while statement's implementation, so they have no use right now.
