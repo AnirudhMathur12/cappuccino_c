@@ -1,4 +1,4 @@
-The point if writing this compiler was to understand how a compiler works on every level. From tokenizing to emitting assembly. It took a lot of iterations and hard resets to finally get to a point where I built something remotely scalable. 
+The point of writing this compiler was to understand how a compiler works on every level. From tokenizing to emitting assembly. It took a lot of iterations and hard resets to finally get to a point where I built something remotely scalable. 
 
 The compiler is nowhere near finished or in any shape to do anything. I built keeping the "Make First, Perfect Later" mindset and I have gotten to a point where I think I can see a refactor on the horizon. 
 
