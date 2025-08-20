@@ -2,9 +2,9 @@ The point of writing this compiler was to understand how a compiler works on eve
 
 The compiler is nowhere near finished or in any shape to do anything. I built keeping the "Make First, Perfect Later" mindset and I have gotten to a point where I think I can see a refactor on the horizon. 
 
-As I am writing everything, even the part that generates the assembly. The compiler only supports computers on Apple silicon (technically it can support all ARM processors, but writing assembly on the M-series is slightly different.
+As I am writing everything, even the part that generates the assembly, so the compiler only supports computers on Apple silicon (technically it can support all ARM processors, but writing assembly on the M-series is slightly different).
 
-Yes I have to use lldb, because I also need to implement a print statement from scratch.
+Yes I have to use lldb, because I also need to implement a print function from scratch.
 
 Here's what the compiler can do:-
 - 
