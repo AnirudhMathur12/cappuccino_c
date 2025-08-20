@@ -17,23 +17,28 @@ void emit(FILE *out, ASTNode *node, VariableArray *var_arr, int priority) {
         break;
     case ADDITION:
         if (node->data.ADDITION.node1->type != INTEGER) {
-            emit(out, node->data.ADDITION.node1, var_arr, 0);
-            emit(out, node->data.ADDITION.node2, var_arr, 1);
+            emit(out, node->data.ADDITION.node1, var_arr, priority + 0);
+            emit(out, node->data.ADDITION.node2, var_arr, priority + 1);
         } else {
-            emit(out, node->data.ADDITION.node2, var_arr, 0);
-            emit(out, node->data.ADDITION.node1, var_arr, 1);
+            emit(out, node->data.ADDITION.node2, var_arr, priority + 0);
+            emit(out, node->data.ADDITION.node1, var_arr, priority + 1);
         }
-        fprintf(out, "\tadd w8, w8, w9\n");
+        fprintf(out, "\tadd w%d, w%d, w%d\n", 8 + priority, 8 + priority,
+                9 + priority);
         break;
     case SUBTRACTION:
         if (node->data.SUBTRACTION.node1->type != INTEGER) {
             emit(out, node->data.SUBTRACTION.node1, var_arr, 0);
             emit(out, node->data.SUBTRACTION.node2, var_arr, 1);
-            fprintf(out, "\tsub w8, w8, w9\n");
+            // fprintf(out, "\tsub w8, w8, w9\n");
+            fprintf(out, "\tsub w%d, w%d, w%d\n", 8 + priority, 8 + priority,
+                    9 + priority);
         } else {
             emit(out, node->data.SUBTRACTION.node2, var_arr, 0);
             emit(out, node->data.SUBTRACTION.node1, var_arr, 1);
-            fprintf(out, "\tsub w8, w9, w8\n");
+            // fprintf(out, "\tsub w8, w9, w8\n");
+            fprintf(out, "\tsub w%d, w%d, w%d\n", 8 + priority, 9 + priority,
+                    8 + priority);
         }
         break;
     case INTEGER:

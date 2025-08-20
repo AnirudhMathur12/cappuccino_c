@@ -1,4 +1,6 @@
 int i;
-while (i > 3) {
-    i = i + 1;
-}
+int j;
+int k;
+int i = 2;
+int j = 3;
+int k = 3 - 2 + i + j
