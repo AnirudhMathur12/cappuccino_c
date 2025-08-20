@@ -21,7 +21,9 @@ Here's what the compiler can do:-
 <img width="660" height="231" alt="Screenshot 2025-08-06 at 11 19 24 PM" src="https://github.com/user-attachments/assets/1fd3464b-b933-4a92-bc7c-1c703ab1f811" />
 <img width="727" height="125" alt="Screenshot 2025-08-06 at 11 22 22 PM" src="https://github.com/user-attachments/assets/885cb3c4-7454-4820-802b-24ecf6cfbf69" />
 
-
+  - Do long complex arithmetic.
+<img width="455" height="232" alt="Screenshot 2025-08-20 at 9 34 45 PM" src="https://github.com/user-attachments/assets/27fb80f0-0ccb-40f6-8c1f-065087c97acf" />
+<img width="952" height="129" alt="Screenshot 2025-08-20 at 9 37 50 PM" src="https://github.com/user-attachments/assets/cb0e8f63-a11b-43f8-b808-79aec3ec7784" />
 
 
   - Can process conditional statements (a > b; etc), but these were planned to be released with if and while statement's implementation, so they have no use right now.
